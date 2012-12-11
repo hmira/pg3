@@ -6,6 +6,7 @@
 #include <cassert>
 #include "renderer.hxx"
 #include "rng.hxx"
+#include "utils.hxx"
 
 // Right now this is a copy of EyeLight renderer. The task is to change this 
 // to a full-fledged path tracer.
@@ -53,7 +54,7 @@ public:
 					const AreaLight* direct_light = (AreaLight*)mScene.GetLightPtr(isect.lightID);
 					LoDirect += direct_light->mRadiance;
 				}
-
+/*
 				for(size_t i=0; i<mScene.GetLightCount(); i++)
 				{
 					const AbstractLight* light = mScene.GetLightPtr(i);
@@ -66,6 +67,37 @@ public:
 					{
 						if( ! mScene.Occluded(surfPt, wig, lightDist) )
 							LoDirect += illum * mat.evalBrdf(frame.ToLocal(wig), frame.ToLocal(isect.normal), wol);
+					}
+				}
+*/
+				/*
+				skúška mikrofónu
+				*/
+/*
+				float x = //kuckir::kuckir_random::next_random_float();
+				float y = kuckir::kuckir_random::next_random_float();
+*/
+				Vec2f in = mRng.GetVec2f();
+				float oPdf = 1.f;
+				Vec3f wig = SampleUniformSphereW(in, &oPdf);
+				Vec3f n_org = ray.org + ray.dir * isect.dist;
+				Ray n_ray(n_org, wig, 0.00001);
+				Isect n_isect;
+				
+				if (mScene.Intersect(n_ray, n_isect))
+				{
+					if (n_isect.lightID >= 0)
+					{	
+						const AreaLight* direct_light = (AreaLight*)mScene.GetLightPtr(n_isect.lightID);
+						Vec3f illum = Dot(isect.normal, wig) * direct_light->mRadiance;
+						if(illum.Max() > 0)
+						{
+							if( ! mScene.Occluded(surfPt, wig, n_isect.dist) )
+							{
+								LoDirect += ( illum * mat.evalBrdf(frame.ToLocal(wig), frame.ToLocal(isect.normal), wol) ) / oPdf;
+							}
+							
+						}
 					}
 				}
 

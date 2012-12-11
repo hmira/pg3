@@ -6,6 +6,7 @@
 #include <random>
 #include <limits>
 #include <stdio.h>
+#include "kuckirrandom.hxx"
 
 int my_extra_super_counter = 0;
 
@@ -42,18 +43,20 @@ public:
     }
 
 private:
-	const float next_random_float() const
+/*	const float next_random_float() const
 	{
-		int a = my_extra_super_counter++;
+		int a = my_extra_super_counter;
 		a = (a ^ 61) ^ (a >> 16);
 		a = a + (a << 3);
 		a = a ^ (a >> 4);
 		a = a * 0x27d4eb2d;
 		a = a ^ (a >> 15);
 
+		my_extra_super_counter = a;
+
 		return ((float) a )/((float) scale);
 	
-	}
+	}*/
 public:
 	virtual Vec3f sampleIllumination(
 		const Vec3f& aSurfPt, 
@@ -69,8 +72,8 @@ public:
 		//std::uniform_real_distribution<float> distribution(0.0,1.0);
 
 
-		float x = next_random_float(); // distribution(generator);
-		float y = next_random_float();//distribution(generator);
+		float x = kuckir::kuckir_random::next_random_float(); // distribution(generator);
+		float y = kuckir::kuckir_random::next_random_float();//distribution(generator);
 
 		if ( x + y > 1) { x = 1-x; y = 1-y; } //Hmíra kombo
 
