@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "math.hxx"
+#include "utils.hxx"
 
 class Material
 {
@@ -29,6 +30,33 @@ public:
 		Vec3f glossyComponent  = (2 + mPhongExponent) * mPhongReflectance * std::pow(Dot(reflected, wil), mPhongExponent) * (0.5f / PI_F) ;
 
 		return diffuseComponent + glossyComponent ;
+	}
+
+	Vec3f sample(const Vec2f& samples, float prob, float* oPdfW) const
+	{
+		float a = mDiffuseReflectance.x +
+			mDiffuseReflectance.y +
+			mDiffuseReflectance.z;
+		float b = mPhongReflectance.x +
+			mPhongReflectance.y +
+			mPhongReflectance.z;
+
+		if ((a+b) == 0)
+		{
+			*oPdfW = 0.f;
+			return Vec3f(0);
+		}
+
+		if (prob < (a / (a + b)))
+		{
+			Vec3f result = SampleCosHemisphereW(samples, oPdfW);
+			return result;
+		}
+		else
+		{
+			Vec3f result = SamplePowerCosHemisphereW(samples, mPhongExponent, oPdfW);
+			return result;
+		}
 	}
 
     Vec3f mDiffuseReflectance;

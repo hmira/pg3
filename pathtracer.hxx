@@ -8,6 +8,8 @@
 #include "rng.hxx"
 #include "utils.hxx"
 
+int sampling_strategy = 1;
+
 // Right now this is a copy of EyeLight renderer. The task is to change this 
 // to a full-fledged path tracer.
 class PathTracer : public AbstractRenderer
@@ -78,8 +80,19 @@ public:
 				float y = kuckir::kuckir_random::next_random_float();
 */
 				Vec2f in = mRng.GetVec2f();
+				float prob = mRng.GetFloat();
 				float oPdf = 1.f;
-				Vec3f wig = SampleUniformSphereW(in, &oPdf);
+
+				Vec3f wig;
+				if (sampling_strategy == 0)
+				{
+					wig = SampleUniformSphereW(in, &oPdf);
+				}
+				else if (sampling_strategy == 1)
+				{
+					//wig = SampleCosHemisphereW(in, &oPdf);
+					wig = mat.sample(in, prob, &oPdf);
+				}
 				Vec3f n_org = ray.org + ray.dir * isect.dist;
 				Ray n_ray(n_org, wig, 0.00001);
 				Isect n_isect;
