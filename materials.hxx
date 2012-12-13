@@ -32,7 +32,7 @@ public:
 		return diffuseComponent + glossyComponent ;
 	}
 
-	Vec3f sample(const Vec2f& samples, float prob, float* oPdfW) const
+	Vec3f sample(Frame frame, const Vec2f& samples, float prob, float* oPdfW) const
 	{
 		float a = mDiffuseReflectance.x +
 			mDiffuseReflectance.y +
@@ -50,12 +50,14 @@ public:
 		if (prob < (a / (a + b)))
 		{
 			Vec3f result = SampleCosHemisphereW(samples, oPdfW);
-			return result;
+			*oPdfW *= (a / (a+b));
+			return frame.ToWorld(result);
 		}
 		else
 		{
 			Vec3f result = SamplePowerCosHemisphereW(samples, mPhongExponent, oPdfW);
-			return result;
+			*oPdfW *= (b / (a+b));
+			return frame.ToWorld(result);
 		}
 	}
 

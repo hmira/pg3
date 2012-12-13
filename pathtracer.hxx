@@ -91,7 +91,7 @@ public:
 				else if (sampling_strategy == 1)
 				{
 					//wig = SampleCosHemisphereW(in, &oPdf);
-					wig = mat.sample(in, prob, &oPdf);
+					wig = mat.sample(frame, in, prob, &oPdf);
 				}
 				Vec3f n_org = ray.org + ray.dir * isect.dist;
 				Ray n_ray(n_org, wig, 0.00001);
@@ -113,7 +113,18 @@ public:
 						}
 					}
 				}
-
+				else
+				{
+					const BackgroundLight* bl = mScene.GetBackground();
+					if (bl)
+					{
+						Vec3f illum = Dot(isect.normal, wig) * bl->mBackgroundColor;
+						if(illum.Max() > 0)
+                                                {
+							LoDirect += ( illum * mat.evalBrdf(frame.ToLocal(wig), frame.ToLocal(isect.normal), wol) ) / oPdf;
+						}
+					}
+				}
 				mFramebuffer.AddColor(sample, LoDirect);
 
 				/*
