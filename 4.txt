@@ -1,0 +1,3 @@
+Scene:   walls spheres + light box + sph. diffuse walls diffuse 
+Target:  1000 iteration(s)
+Running: path tracing... done in 7059.88 s

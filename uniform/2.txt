@@ -1,0 +1,5 @@
+Scene:   walls spheres + ceiling light + sph. diffuse walls diffuse 
+Target:  500 iteration(s)
+Running: path tracing... Scene:   walls spheres + ceiling light + sph. diffuse walls diffuse 
+Target:  500 iteration(s)
+Running: path tracing... done in 2227.52 s

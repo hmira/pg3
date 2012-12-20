@@ -5,6 +5,8 @@
 #include "math.hxx"
 #include "ray.hxx"
 
+#include <stdio.h>
+
 //////////////////////////////////////////////////////////////////////////
 // Geometry
 
@@ -117,6 +119,7 @@ public:
            ((v0d >= 0.f) && (v1d >= 0.f) && (v2d >= 0.f)))
         {
             const float distance = Dot(mNormal, ao) / Dot(mNormal, aRay.dir);
+
 
             if((distance > aRay.tmin) & (distance < oResult.dist))
             {
